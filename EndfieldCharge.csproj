@@ -1,0 +1,44 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>latest</LangVersion>
+    <!-- SettingsWindow 只在代码中带参构造，XAML 运行时加载器警告为误报 -->
+    <NoWarn>$(NoWarn);AVLN3001</NoWarn>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ApplicationIcon>Assets\tray_bolt.ico</ApplicationIcon>
+    <AssemblyName>EndfieldCharge</AssemblyName>
+    <RootNamespace>EndfieldCharge</RootNamespace>
+    <Authors>Lenkmat</Authors>
+    <Company>Lenkmat</Company>
+    <Copyright>Copyright © 2026 Lenkmat</Copyright>
+    <PlatformTarget>x64</PlatformTarget>
+    <!-- 单文件发布，方便丢进开机启动 -->
+    <PublishSingleFile Condition="'$(Configuration)'=='Release'">true</PublishSingleFile>
+    <SelfContained Condition="'$(Configuration)'=='Release'">false</SelfContained>
+    <!-- 无条件下发给 restore：CI 里 restore 不带 -c Release，若只有条件 RuntimeIdentifier，
+         assets 里就不会有 net8.0-windows/win-x64 目标，build/publish 会报
+         "Assets file doesn't have a target for 'net8.0-windows/win-x64'" -->
+    <RuntimeIdentifiers>win-x64</RuntimeIdentifiers>
+    <RuntimeIdentifier Condition="'$(Configuration)'=='Release'">win-x64</RuntimeIdentifier>
+    <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Avalonia" Version="11.2.1" />
+    <PackageReference Include="Avalonia.Desktop" Version="11.2.1" />
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="11.2.1" />
+    <PackageReference Include="Avalonia.Fonts.Inter" Version="11.2.1" />
+    <PackageReference Include="LibreHardwareMonitorLib" Version="0.9.7-pre739" />
+    <!-- 电池信息兜底读取（主路径是 powrprof P/Invoke，无需此包；WMI 仅作备用） -->
+    <PackageReference Include="System.Management" Version="10.0.12" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AvaloniaResource Include="Assets\**" />
+  </ItemGroup>
+
+</Project>
